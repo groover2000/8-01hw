@@ -50,8 +50,10 @@
 
 Ваш граф комитов должен выглядеть аналогично скриншоту:
 
-![Скриншот](img/image.png)
-![Скриншот](img/image2.png)
+<p align="center">
+  <img src="img/image.png" width="100%" title="hover text">
+  <img src="img/image2.png" width="100%" alt="accessibility text">
+</p>
 
 
 
