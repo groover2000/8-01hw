@@ -1,3 +1,5 @@
 #!/bin/bash
 
-echo "Git commit"
+GREETING="Git commit"
+
+echo "${GREETING}"
