@@ -50,6 +50,8 @@
 
 Ваш граф комитов должен выглядеть аналогично скриншоту:
 
+[Ссылка на граф](https://github.com/groover2000/8-01hw/network)
+
 <p align="center">
   <img src="img/image.png" width="100%" title="hover text">
   <img src="img/image2.png" width="100%" alt="accessibility text">
@@ -76,3 +78,5 @@
 5. Сделайте коммит и пуш.
 6. Сделайте мердж ветки conflict в основную ветку и решите конфликт так, чтобы в результате в файле оказался код из ветки conflict.
 7. В качестве ответа на задание прикрепите ссылку на граф коммитов https://github.com/ваш-логин/ваш-репозиторий/network в ваш md-файл с решением.
+
+[Ссылка на граф](https://github.com/groover2000/8-01hw/network)
