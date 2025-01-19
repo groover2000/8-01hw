@@ -14,7 +14,7 @@
  ![Настройка роутеров](./img/routers.png)
  ![Пинг 1](./img/ping1.png)
  ![Пинг 2](./img/ping2.png)
- [Ссылка](./files/hsrp_advanced_changed.pkt)
+ [Ссылка на файл cisco](./files/hsrp_advanced_changed.pkt)
 ---
 
 ### Задание 2
@@ -23,6 +23,18 @@
 3. Напишите Bash-скрипт, который будет проверять доступность порта данного веб-сервера и существование файла index.html в root-директории данного веб-сервера.
 4. Настройте Keepalived так, чтобы он запускал данный скрипт каждые 3 секунды и переносил виртуальный IP на другой сервер, если bash-скрипт завершался с кодом, отличным от нуля (то есть порт веб-сервера был недоступен или отсутствовал index.html). Используйте для этого секцию vrrp_script
 5. На проверку отправьте получившейся bash-скрипт и конфигурационный файл keepalived, а также скриншот с демонстрацией переезда плавающего ip на другой сервер в случае недоступности порта или файла index.html
+
+1. ip master
+ ![ip master](./img/ipamaster.png)
+2. ip backup
+ ![ip backup](./img/ipbackup.png)
+3. change instance 
+ ![keepalivewordk](./img/keepalivedWork.png)
+ ![keepalivewordk2](./img/keepalivedSecond.png)
+4. У мастера такой же только backup
+ ![config](./img/configfile.png)
+
+ [Ссылка на файл cisco](./files/hsrp_advanced_changed.pkt)
 
 ---
 
