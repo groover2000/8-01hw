@@ -15,7 +15,7 @@
 # Задание 2. Memcached
 Установите и запустите memcached.
 Приведите скриншот systemctl status memcached, где будет видно, что memcached запущен.
-![memcached]("./img/memcachde.png")
+![memcached](./img/memcached.png)
 ---
 
 # Задание 3. Удаление по TTL в Memcached
