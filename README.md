@@ -11,7 +11,7 @@
 
     docker run --name es1 -p 9200:9200 -e "discovery.type=single-node" -e "xpack.security.enabled=false" -e "cluster.name=random-netology" -it ghcr.io/hirotasoshu/elasticsearch:latest
 
-![firsrt](./img/elc1.png) 
+![elasticsearch](./img/elc1.png) 
 
 ---
 
@@ -20,6 +20,10 @@
 
     Приведите скриншот интерфейса Kibana на странице http://<ip вашего сервера>:5601/app/dev_tools#/console, где будет выполнен запрос GET /_cluster/health?pretty.
 ---
+    docker run -d --name kibana  -p 5601:5601 kibana:8.10.3
+
+![elastic+kibana](./img/elc2.png) 
+
 
 # Задание 3. Logstash
 
