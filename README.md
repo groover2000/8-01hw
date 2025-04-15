@@ -13,6 +13,8 @@ docker run --name es1 -p 9200:9200 -e "discovery.type=single-node" -e "xpack.sec
 
 ![firsrt](./img/elc1.png) 
 
+---
+
 # Задание 2. Kibana
     Установите и запустите Kibana.
 
