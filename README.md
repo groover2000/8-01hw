@@ -9,7 +9,7 @@
     Приведите скриншот команды 'curl -X GET 'localhost:9200/_cluster/health?pretty', сделанной на сервере с установленным Elasticsearch. Где будет виден нестандартный cluster_name.
 ---
 
-docker run --name es1 -p 9200:9200 -e "discovery.type=single-node" -e "xpack.security.enabled=false" -e "cluster.name=random-netology" -it ghcr.io/hirotasoshu/elasticsearch:latest
+    docker run --name es1 -p 9200:9200 -e "discovery.type=single-node" -e "xpack.security.enabled=false" -e "cluster.name=random-netology" -it ghcr.io/hirotasoshu/elasticsearch:latest
 
 ![firsrt](./img/elc1.png) 
 
