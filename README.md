@@ -31,6 +31,10 @@
 
     Приведите скриншот интерфейса Kibana, на котором видны логи Nginx.
 ---
+    docker run -d --name logstashnginx -v /home/roomin/logs/access.log:/var/log/nginx/access.log -v ./config/logstash.yml:/usr/share/logstash/config/logstash.yml -     
+    v./config/pipelines.yml:/usr/share/logstash/config/pipelines.yml -v ./pipelines/nginx_logs.conf:/usr/share/logstash/config/pipelines/nginx_logs.conf logstash:8.10.3
+
+![elastic+kibana](./img/elc3.png)  
 
 
 # Задание 4. Filebeat.
@@ -41,6 +45,14 @@
 
     Дополнительные задания (со звёздочкой*)
 ---
+    docker run -d --name logstashnginx -v /home/roomin/logs/access.log:/var/log/nginx/access.log -v ./config/logstash.yml:/usr/share/logstash/config/logstash.yml - 
+    v./config/pipelines_filebeat.yml:/usr/share/logstash/config/pipelines.yml -v ./pipelines/nginx_logs_filebeat.conf:/usr/share/logstash/config/pipelines/nginx_logs_filebeat.conf 
+    logstash:8.10.3
+    
+    docker run -d --name filebeat -v ./logs/access.log:/var/log/nginx/access.log -v ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml elastic/filebeat:8.10.3
+
+![elastic+kibana](./img/elc4.png) 
+![elastic+kibana](./img/elc5.png) 
 
 # Задание 5*. Доставка данных
 
