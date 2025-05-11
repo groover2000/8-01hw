@@ -21,6 +21,7 @@
 
 1.6. Переподключитесь к базе данных от имени sys_temp.
 
+![text](./img/db3.png)
 Для смены типа аутентификации с sha2 используйте запрос:
 
         ALTER USER 'sys_test'@'localhost' IDENTIFIED WITH mysql_native_password BY 'password';
@@ -44,16 +45,16 @@
         customer         | customer_id
 
 --- 
-                SELECT 
-                        TABLE_NAME AS table_name,
+        SELECT 
+                TABLE_NAME AS table_name,
                         COLUMN_NAME AS primary_key_column
-                FROM 
-                        INFORMATION_SCHEMA.KEY_COLUMN_USAGE
-                WHERE 
-                        TABLE_SCHEMA = 'sakila' 
-                        ND CONSTRAINT_NAME = 'PRIMARY'
-                ORDER BY 
-                        TABLE_NAME, ORDINAL_POSITION;
+        FROM 
+                INFORMATION_SCHEMA.KEY_COLUMN_USAGE
+        WHERE 
+                TABLE_SCHEMA = 'sakila' 
+                ND CONSTRAINT_NAME = 'PRIMARY'
+        ORDER BY 
+                TABLE_NAME, ORDINAL_POSITION;
 
 
 ![text](./img/db5.png)
