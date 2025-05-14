@@ -100,6 +100,6 @@ SELECT
 FROM sakila.customer c
 ```
 
-<center><img src = "img/sql5.png"></center>
+<center><img src = "img/sql6.png"></center>
 
 
