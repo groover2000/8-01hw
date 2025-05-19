@@ -7,6 +7,12 @@
 город нахождения магазина;
 количество пользователей, закреплённых в этом магазине.
 
+SELECT COUNT(s.store_id) AS users_count
+FROM sakila.store s 
+LEFT JOIN sakila.customer c ON c.store_id = s.store_id
+GROUP BY s.manager_staff_id
+HAVING users_count > 300
+
 ## Задание 2
 Получите количество фильмов, продолжительность которых больше средней продолжительности всех фильмов.
 
