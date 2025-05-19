@@ -7,10 +7,11 @@
 город нахождения магазина;
 количество пользователей, закреплённых в этом магазине.
 
-SELECT COUNT(s.store_id) AS users_count
+SELECT COUNT(s.store_id) AS users_count, CONCAT_WS(' ', s2.first_name, s2.last_name)
 FROM sakila.store s 
 LEFT JOIN sakila.customer c ON c.store_id = s.store_id
-GROUP BY s.manager_staff_id
+INNER JOIN sakila.staff s2 ON c.store_id = s2.store_id
+GROUP BY s.manager_staff_id, s2.first_name, s2.last_name
 HAVING users_count > 300
 
 ## Задание 2
