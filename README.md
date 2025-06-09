@@ -1,89 +1,84 @@
-### Домашнее задание к занятию «Индексы»
+### Домашнее задание к занятию «Уязвимости и атаки на информационные системы»
 
 ## Задание 1
-Напишите запрос к учебной базе данных, который вернёт процентное отношение общего размера всех индексов к общему размеру всех таблиц.
+Скачайте и установите виртуальную машину Metasploitable: https://sourceforge.net/projects/metasploitable/.
 
-```SQL
-	SELECT ROUND(SUM(t.INDEX_LENGTH ) / SUM(t.DATA_LENGTH + t.INDEX_LENGTH) * 100, 0) AS answer
-	FROM information_schema.TABLES t 
-	WHERE t.TABLE_SCHEMA = "sakila"
+Это типовая ОС для экспериментов в области информационной безопасности, с которой следует начать при анализе уязвимостей.
+
+Просканируйте эту виртуальную машину, используя nmap.
+
+Попробуйте найти уязвимости, которым подвержена эта виртуальная машина.
+
+Сами уязвимости можно поискать на сайте https://www.exploit-db.com/.
+
+Для этого нужно в поиске ввести название сетевой службы, обнаруженной на атакуемой машине, и выбрать подходящие по версии уязвимости.
+
+Ответьте на следующие вопросы:
+
+Какие сетевые службы в ней разрешены?
+
+```SHELL
+PORT     STATE SERVICE     VERSION
+21/tcp   open  ftp         vsftpd 2.3.4
+22/tcp   open  ssh         OpenSSH 4.7p1 Debian 8ubuntu1 (protocol 2.0)
+23/tcp   open  telnet      Linux telnetd
+25/tcp   open  smtp        Postfix smtpd
+53/tcp   open  domain      ISC BIND 9.4.2
+80/tcp   open  http        Apache httpd 2.2.8 ((Ubuntu) DAV/2)
+111/tcp  open  rpcbind     2 (RPC #100000)
+139/tcp  open  netbios-ssn Samba smbd 3.X - 4.X (workgroup: WORKGROUP)
+445/tcp  open  netbios-ssn Samba smbd 3.X - 4.X (workgroup: WORKGROUP)
+512/tcp  open  exec        netkit-rsh rexecd
+513/tcp  open  login       OpenBSD or Solaris rlogind
+514/tcp  open  tcpwrapped
+1099/tcp open  java-rmi    GNU Classpath grmiregistry
+1524/tcp open  bindshell   Metasploitable root shell
+2049/tcp open  nfs         2-4 (RPC #100003)
+2121/tcp open  ftp         ProFTPD 1.3.1
+3306/tcp open  mysql       MySQL 5.0.51a-3ubuntu5
+5432/tcp open  postgresql  PostgreSQL DB 8.3.0 - 8.3.7
+5900/tcp open  vnc         VNC (protocol 3.3)
+6000/tcp open  X11         (access denied)
+6667/tcp open  irc         UnrealIRCd
+8009/tcp open  ajp13       Apache Jserv (Protocol v1.3)
+8180/tcp open  http        Apache Tomcat/Coyote JSP engine 1.1
 ```
 
-## Задание 2
-Выполните explain analyze следующего запроса:
+Какие уязвимости были вами обнаружены? (список со ссылками: достаточно трёх уязвимостей)
 
-```SQL
-	select distinct concat(c.last_name, ' ', c.first_name), sum(p.amount) over (partition by c.customer_id, f.title)
-	from payment p, rental r, customer c, inventory i, film f
-	where date(p.payment_date) = '2005-07-30' and p.payment_date = r.rental_date and r.customer_id = c.customer_id and i.inventory_id = r.inventory_id
-
-```
-Запрос
----
-```SQL
-SELECT 
-  CONCAT(c.last_name, ' ', c.first_name) AS full_name,
-  SUM(p.amount) AS total_amount
-FROM payment p
-JOIN rental r ON p.rental_id = r.rental_id
-JOIN customer c ON r.customer_id = c.customer_id
-JOIN inventory i ON r.inventory_id = i.inventory_id
-WHERE p.payment_date >= '2005-07-30' AND p.payment_date < '2005-07-31'
-GROUP BY full_name, c.last_name
-```
- 1. Замена каста на between, дает использовать индекс
- 2. GROUP BY вместо DISTINCT, берется меньше строк
- 3. Немного не понял смысла вообще брать таблиц film
- 4. Явное соединение вроде как лучше чем не явное
- 5. Возможно добавить индекс для даты
-
-+ перечислите узкие места;
-+ оптимизируйте запрос: внесите корректировки по использованию операторов, при необходимости добавьте индексы.
-
-Было
----
-```SQL
--> Table scan on <temporary>  (cost=2.5..2.5 rows=0) (actual time=4011..4011 rows=391 loops=1)
-    -> Temporary table with deduplication  (cost=0..0 rows=0) (actual time=4011..4011 rows=391 loops=1)
-        -> Window aggregate with buffering: sum(p.amount) OVER (PARTITION BY c.customer_id,f.title )   (actual time=1812..3863 rows=642000 loops=1)
-            -> Sort: c.customer_id, f.title  (actual time=1811..1856 rows=642000 loops=1)
-                -> Stream results  (cost=16.6e+6 rows=17.1e+6) (actual time=14.6..1288 rows=642000 loops=1)
-                    -> Nested loop inner join  (cost=16.6e+6 rows=17.1e+6) (actual time=3.59..1104 rows=642000 loops=1)
-                        -> Nested loop inner join  (cost=14.9e+6 rows=17.1e+6) (actual time=3.59..988 rows=642000 loops=1)
-                            -> Nested loop inner join  (cost=13.2e+6 rows=17.1e+6) (actual time=3.58..867 rows=642000 loops=1)
-                                -> Inner hash join (no condition)  (cost=1.65e+6 rows=16.5e+6) (actual time=3.48..33.6 rows=634000 loops=1)
-                                    -> Filter: (cast(p.payment_date as date) = '2005-07-30')  (cost=1.72 rows=16500) (actual time=0.203..4.28 rows=634 loops=1)
-                                        -> Table scan on p  (cost=1.72 rows=16500) (actual time=0.193..2.88 rows=16044 loops=1)
-                                    -> Hash
-                                        -> Covering index scan on f using idx_title  (cost=103 rows=1000) (actual time=0.0431..0.177 rows=1000 loops=1)
-                                -> Covering index lookup on r using rental_date (rental_date = p.payment_date)  (cost=0.594 rows=1.04) (actual time=923e-6..0.00123 rows=1.01 loops=634000)
-                            -> Single-row index lookup on c using PRIMARY (customer_id = r.customer_id)  (cost=250e-6 rows=1) (actual time=91e-6..105e-6 rows=1 loops=642000)
-                        -> Single-row covering index lookup on i using PRIMARY (inventory_id = r.inventory_id)  (cost=250e-6 rows=1) (actual time=83.1e-6..97.3e-6 rows=1 loops=642000)
-	
-```
-
-
-Стало
----
-```SQL
--> Sort: full_name, c.last_name  (actual time=6.5..6.52 rows=391 loops=1)
-	-> Table scan on <temporary>  (actual time=6.34..6.38 rows=391 loops=1)
-		-> Aggregate using temporary table  (actual time=6.34..6.34 rows=391 loops=1)
-			-> Nested loop inner join  (cost=4886 rows=1833) (actual time=0.245..5.78 rows=634 loops=1)
-				-> Nested loop inner join  (cost=4244 rows=1833) (actual time=0.24..5.1 rows=634 loops=1)
-					-> Nested loop inner join  (cost=3603 rows=1833) (actual time=0.236..4.65 rows=634 loops=1)
-						-> Filter: ((p.payment_date >= TIMESTAMP'2005-07-30 00:00:00') and (p.payment_date < TIMESTAMP'2005-07-31 00:00:00') and (p.rental_id is not null))  (cost=1674 rows=1833) (actual time=0.224..3.86 rows=634 loops=1)
-							-> Table scan on p  (cost=1674 rows=16500) (actual time=0.217..3.04 rows=16044 loops=1)
-						-> Single-row index lookup on r using PRIMARY (rental_id = p.rental_id)  (cost=0.952 rows=1) (actual time=0.00113..0.00114 rows=1 loops=634)
-					-> Single-row index lookup on c using PRIMARY (customer_id = r.customer_id)  (cost=0.25 rows=1) (actual time=615e-6..629e-6 rows=1 loops=634)
-				-> Single-row covering index lookup on i using PRIMARY (inventory_id = r.inventory_id)  (cost=0.25 rows=1) (actual time=960e-6..974e-6 rows=1 loops=634)
-```
-
-
-## Дополнительные задания (со звёздочкой*)
-Эти задания дополнительные, то есть не обязательные к выполнению, и никак не повлияют на получение вами зачёта по этому домашнему заданию. Вы можете их выполнить, если хотите глубже шире разобраться в материале.
-
-## Задание 3*
-Самостоятельно изучите, какие типы индексов используются в PostgreSQL. Перечислите те индексы, которые используются в PostgreSQL, а в MySQL — нет.
+https://www.exploit-db.com/exploits/49757 - ftp
+https://www.exploit-db.com/exploits/15449 - ProFTPD
+https://www.exploit-db.com/exploits/16922
 
 Приведите ответ в свободной форме.
+
+
+
+
+### Задание 2
+
+Проведите сканирование Metasploitable в режимах SYN, FIN, Xmas, UDP.
+Запишите сеансы сканирования в Wireshark.
+
+```SHELL
+sudo tcpdump -u eth0 -w wireshark.pcap
+sudo nmap -sS 192.168.0.27 
+sudo nmap -sA 192.168.0.27 
+sudo nmap -sX 192.168.0.27 
+sudo nmap -sU 192.168.0.27
+Открываем дамп в Wireshark 
+```
+Открываем дамп в Wireshark
+
+Ответьте на следующие вопросы:
+
+Чем отличаются эти режимы сканирования с точки зрения сетевого трафика?
+
+| Метод сканирования  | Ключ  | Протокол | Поведение                                             | Преимущества                        | Недостатки                          |
+| ------------------- | ----- | -------- | ----------------------------------------------------- | ----------------------------------- | ----------------------------------- |
+| **SYN** (Half-open) | `-sS` | TCP      | Отправляется SYN-пакет без завершения 3-way handshake | Быстро, скрытно                     | Требует raw-сокетов (root)          |
+| **FIN**             | `-sF` | TCP      | Отправляется FIN без предварительного SYN             | Обходит некоторые фильтры           | Не работает на Windows-серверах     |
+| **Xmas**            | `-sX` | TCP      | TCP-пакет с флагами FIN, URG, PSH                     | Стелс, низкая сигнатура             | Аналогично, неэффективен на Windows |
+| **UDP**             | `-sU` | UDP      | Отправка пустых или специфичных UDP пакетов           | Сканирует нестандартные UDP-сервисы | Медленно, много ложных срабатываний |
+
+Как отвечает сервер?
